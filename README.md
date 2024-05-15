@@ -1,85 +1,44 @@
-import React, { useState } from 'react';
+// src/App.js
+import React from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import Home from './components/Home';
+import FdForm from './components/FdForm';
 
-function FdForm() {
-    const [fd, setFd] = useState({
-        customerId: '',
-        accountId: '',
-        depositAmount: '',
-        depositType: '',
-        depositPeriod: '',
-        startDate: '',
-        maturityDate: ''
-    });
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFd({ ...fd, [name]: value });
-    };
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        fetch('http://localhost:8080/api/fds', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(fd)
-        })
-        .then(response => {
-            if (response.ok) {
-                alert('Fixed Deposit created successfully');
-                setFd({
-                    customerId: '',
-                    accountId: '',
-                    depositAmount: '',
-                    depositType: '',
-                    depositPeriod: '',
-                    startDate: '',
-                    maturityDate: ''
-                });
-            } else {
-                alert('Error creating Fixed Deposit');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error creating Fixed Deposit');
-        });
-    };
-
+function App() {
     return (
-        <form onSubmit={handleSubmit}>
+        <Router>
             <div>
-                <label>Customer ID:</label>
-                <input type="text" name="customerId" value={fd.customerId} onChange={handleChange} required />
+                <nav>
+                    <ul>
+                        <li>
+                            <Link to="/">Home</Link>
+                        </li>
+                        <li>
+                            <Link to="/create-fd">Create Fixed Deposit</Link>
+                        </li>
+                    </ul>
+                </nav>
+
+                <Routes>
+                    <Route path="/" element={<Home />} />
+                    <Route path="/create-fd" element={<FdForm />} />
+                </Routes>
             </div>
-            <div>
-                <label>Account ID:</label>
-                <input type="text" name="accountId" value={fd.accountId} onChange={handleChange} required />
-            </div>
-            <div>
-                <label>Deposit Amount:</label>
-                <input type="number" name="depositAmount" value={fd.depositAmount} onChange={handleChange} required />
-            </div>
-            <div>
-                <label>Deposit Type:</label>
-                <input type="text" name="depositType" value={fd.depositType} onChange={handleChange} required />
-            </div>
-            <div>
-                <label>Deposit Period (months):</label>
-                <input type="number" name="depositPeriod" value={fd.depositPeriod} onChange={handleChange} required />
-            </div>
-            <div>
-                <label>Start Date:</label>
-                <input type="date" name="startDate" value={fd.startDate} onChange={handleChange} required />
-            </div>
-            <div>
-                <label>Maturity Date:</label>
-                <input type="date" name="maturityDate" value={fd.maturityDate} onChange={handleChange} required />
-            </div>
-            <button type="submit">Create Fixed Deposit</button>
-        </form>
+        </Router>
     );
 }
 
-export default FdForm;
+export default App;
+
+// src/index.js
+import React from 'react';
+import ReactDOM from 'react-dom/client';
+import App from './App';
+import './index.css';
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(
+    <React.StrictMode>
+        <App />
+    </React.StrictMode>
+);
